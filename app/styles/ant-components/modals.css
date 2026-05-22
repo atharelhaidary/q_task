@@ -1,0 +1,7 @@
+.ant-modal:focus,
+.ant-modal-content:focus,
+.ant-modal *:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+ 

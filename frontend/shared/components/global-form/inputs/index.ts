@@ -1,0 +1,11 @@
+export { default as InputText }  from "./InputText";
+export { default as InputEmail }  from "./InputEmail";
+export { default as InputPassword }  from "./InputPassword";
+export { default as InputTextArea }  from "./InputTextArea";
+export { default as SelectBox }  from "./SelectBox";
+export { default as Date }  from "./Date";
+export { default as Time }  from "./Time";
+export { default as RadioBtn }  from "./RadioBtn";
+export { default as InputHidden } from "./InputHidden";
+export { default as File }  from "./File";
+export { default as InputNumberr }  from "./InputNumber";

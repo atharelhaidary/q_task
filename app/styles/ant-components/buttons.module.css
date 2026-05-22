@@ -1,0 +1,55 @@
+.primary-btn{
+    position: relative !important;
+    overflow:hidden !important;
+    border: 0 !important;
+    border-radius: 0.5rem !important;
+    color: white !important;
+    height: auto  !important;
+    background-image: var(--gradient-primary) !important;
+    padding: .4rem !important;
+    color: white !important;
+    font-size: 16px !important;
+    transition: all 500ms !important; 
+    font-weight: 900 !important; 
+    z-index: 1 !important;   
+  }
+  @media (min-width: 768px) {
+    .primary-btn {
+      font-size: 1.125rem !important; 
+    }
+}
+.primary-btn > * {
+  z-index: 10 !important;
+}
+
+/* hover-btn */
+.hoverBtn-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transform: translateX(100%);
+    transition: all 500ms !important;
+    background: var(--gradient-primary) !important;
+    z-index: 0 !important; 
+    border-radius: inherit !important;
+  }
+  
+.primary-btn:hover, .primary-btn:active {
+    transform: scale(1.05) !important;
+    /* background: none !important; */
+    .hoverBtn-overlay {
+        transform: translateX(0) !important;
+     }
+} 
+/* text-btn */
+.btn-text{
+  /* @apply primary-text-gradient; */
+  border: none !important;
+  padding: 3px !important;
+}
+.btn-text:hover, .btn-text:active {
+  color: transparent !important;
+  text-decoration: underline !important;
+}

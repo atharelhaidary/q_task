@@ -1,0 +1,1 @@
+export { SEARCH_INPUT }  from './search-input.config'

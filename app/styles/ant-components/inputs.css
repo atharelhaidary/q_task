@@ -1,0 +1,18 @@
+.custom-input{
+    padding-left: .5rem !important;
+    padding-right: 0.5rem !important;
+    height: 2.5rem !important;
+    font-size: 0.875rem !important;
+    background-color: var(--cardBackground) !important;
+    border: 2px solid var(--borderColor) !important;
+    color : var(--titleColor) !important;
+}
+.ant-input::placeholder, .ant-select-placeholder{
+  color: #afb4bf !important;
+}
+
+
+.ant-select .ant-select-suffix .anticon-loading {
+  font-size: 25px !important;
+  color: var(--primaryText) !important;
+}
