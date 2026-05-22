@@ -8,7 +8,7 @@ interface ICardHeaderProps {
 
 const CardHeader = memo(({ status, length }: ICardHeaderProps) => {
     return (
-        // card header
+        // test card header 
         <div className="card-header">
             <div className={`${TITLE_STYLE[status]} rounded-full w-[10px] h-[10px]`} />
             <h4>
