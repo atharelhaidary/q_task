@@ -60,7 +60,7 @@ export default function TaskCard() {
                                                             <DeleteOutlined onClick={() => handleDelete(t._id)} />
                                                         </div>
                                                         <span className="font-semibold">{t.title}</span>
-                                                        <p className="text-grayTextSecondary text-sm line-clamp-2">
+                                                        <p className="text-grayTextSecondary text-sm">
                                                             {t.desc || 'No description'}
                                                         </p>
                                                         <div className="flex-wrap-container gap-3">
