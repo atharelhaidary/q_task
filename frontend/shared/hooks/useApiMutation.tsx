@@ -64,7 +64,6 @@ export const useApiMutaion = <TResponse extends { message?: string; data?: unkno
         },
 
         onSuccess: (data, variables, context) => {
-            // ✅ في حالة optimistic update، منعملش invalidate خالص
             if (!onOptimisticUpdate && configInvalidateQueries) {
                 const queries = typeof configInvalidateQueries === 'function'
                     ? configInvalidateQueries(data)
