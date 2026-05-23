@@ -1,4 +1,4 @@
-import { TASK_TITLE, TITLE_STYLE } from "@/frontend/tasks/constant/tasks.constant";
+import { TITLE_STYLE, TASK_TITLE } from '@/frontend/modules/tasks/constant'
 import { memo } from "react";
 
 interface ICardHeaderProps {
@@ -8,7 +8,6 @@ interface ICardHeaderProps {
 
 const CardHeader = memo(({ status, length }: ICardHeaderProps) => {
     return (
-        // test card header 
         <div className="card-header">
             <div className={`${TITLE_STYLE[status]} rounded-full w-[10px] h-[10px]`} />
             <h4>

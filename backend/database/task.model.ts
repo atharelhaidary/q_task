@@ -7,6 +7,8 @@ export interface ITask extends Document {
         priority : number
         status : number
         tags : string[]
+        createdAt?: Date;  
+        updatedAt?: Date;
 }
 
 const TaskSchema = new Schema<ITask>(
@@ -31,9 +33,8 @@ const TaskSchema = new Schema<ITask>(
             type: [String]   
         },
     },
-    { timestamps: true }
+    {  timestamps: true  }
 );
-
 const Task = (models.Task as Model<ITask>) || model<ITask>('Task', TaskSchema);
 export default Task;
 

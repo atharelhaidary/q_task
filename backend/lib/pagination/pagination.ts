@@ -64,8 +64,6 @@ export async function pagination<T>(
                 mainFilters[key] = value;
         }
     });
-// console.log('mainFilters',mainFilters)
-// console.log('populateFilters',populateFilters)
 
     //add populateFilters to mainFilters
     if (populateFilters && Object.keys(populateFilters).length > 0) {
@@ -77,7 +75,6 @@ export async function pagination<T>(
             const RelatedModel = mongoose.model(getCollectionName(topLevelPath));
             const matchedIds = await RelatedModel.find({ [nestedPath]: filterValue }).distinct('_id');
             
-            // دمج الفلاتر (لو أكتر من فلتر على نفس الـ path)
             if (mainFilters[topLevelPath]) {
                 mainFilters['$and'] = mainFilters['$and'] || [];
                 mainFilters['$and'].push({ [topLevelPath]: { $in: matchedIds } });

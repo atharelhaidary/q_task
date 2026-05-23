@@ -12,8 +12,10 @@ type TQueryClientProviderrProps  =  {
     return new QueryClient({
          defaultOptions: {
            queries: {
-             staleTime: 5 * 60 * 1000, // 5 دقائق
-             gcTime: 10 * 60 * 1000, // 10 دقائق
+            staleTime: 0, 
+            gcTime: 0,
+            // staleTime: 5 * 60 * 1000,
+            // gcTime: 10 * 60 * 1000,
              retry: false,
              refetchOnWindowFocus: false,
              refetchOnMount: true,

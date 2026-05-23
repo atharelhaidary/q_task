@@ -7,6 +7,8 @@ import { POPUP } from "@/frontend/shared/constants"
 import { useCreateTask, useGetTasks, useUpdateTask } from "."
 import { TASK_INPUTS } from "../config"
 
+const TASK_FIELDS = Object.values(TASK_INPUTS);
+
 export const useTasksForm = ()  => {
     const methods = useForm({
         defaultValues: ({
@@ -19,9 +21,9 @@ export const useTasksForm = ()  => {
     const {  reset, setError } = methods
     const { mutate : createTask } = useCreateTask({setError})
     const { mutate : updateTask } = useUpdateTask({setError})
-    const {  popupStates  } = usePopup();
-    const popupAdd = popupStates?.[POPUP.TASKS.ADD] || {}
-    const popupUpdate = popupStates?.[POPUP.TASKS.UPDATE] || {}
+    const {  popupStates , hidePopup } = usePopup();
+    const popupAdd = useMemo(() => popupStates?.[POPUP.TASKS.ADD] || {}, [popupStates?.[POPUP.TASKS.ADD]])
+    const popupUpdate = useMemo(() => popupStates?.[POPUP.TASKS.UPDATE] || {}, [popupStates?.[POPUP.TASKS.UPDATE]])
     const isAddMode = popupAdd?.open 
     const isUpdateMode = popupUpdate?.open
     const updateId = popupUpdate?.id
@@ -39,7 +41,7 @@ export const useTasksForm = ()  => {
         } else if (isUpdateMode) {
             updateTask(newApiFormData);
         }
-    }, [isAddMode, isUpdateMode,]);
+    }, [isAddMode, isUpdateMode, createTask, updateTask]);
     // get specific teacher
     const { data, isLoading  , isFetching } =  useGetTasks({
         data :{_id: updateId},
@@ -48,7 +50,6 @@ export const useTasksForm = ()  => {
     const tasksData = useMemo(()=>{
        return data?.data[0]
     },[data?.data])
-    ;
 
     // assign teachet data to form inputs
     useEffect(() => {
@@ -63,15 +64,23 @@ export const useTasksForm = ()  => {
         }
       }, [ tasksData,isUpdateMode, reset]);
 
-      const taskFields = Object?.values(TASK_INPUTS)
+     
+
+      const handleCancel = useCallback(() => {
+        const popupKey = isAddMode ? POPUP.TASKS.ADD : POPUP.TASKS.UPDATE;
+        hidePopup(popupKey);
+        reset({});
+    }, [isAddMode, hidePopup, reset]);
 
 
-    return {
+    return useMemo(() => ({
+        popupAdd,
+        popupUpdate,
         methods,
         handleSubmit,
         isLoading,
         isFetching,
-
-        taskFields
-    }
+        taskFields: TASK_FIELDS,
+        handleCancel,
+    }), [popupAdd, popupUpdate, methods, handleSubmit, isLoading, isFetching, handleCancel]);
 }

@@ -1,4 +1,4 @@
-import { Tasks } from "@/frontend/tasks/components";
+import { Tasks } from "@/frontend/modules/tasks/components";
 
 export default function Home() {
   return (

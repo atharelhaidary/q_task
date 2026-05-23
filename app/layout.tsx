@@ -3,7 +3,6 @@ import "./globals.css";
 import { Suspense } from "react";
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import AppProvider from "../frontend/shared/providers/AppProvider";
-import { Loading } from "../frontend/shared/components";
 
 
 export const metadata: Metadata = {
@@ -26,7 +25,7 @@ export  default async function RootLayout({
       </head>
       <body className="h-screen relative flex flex-center">
           <AntdRegistry>
-           <Suspense fallback={<Loading/>}>
+           <Suspense>
                   <AppProvider>
                             <main className="flex h-full  container">
                               {children}

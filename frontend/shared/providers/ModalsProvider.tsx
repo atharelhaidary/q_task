@@ -1,5 +1,5 @@
 "use client"
-import { AddNewTaks, DeleteClass, SuccessCreateTask } from "@/frontend/tasks/components";
+import { AddNewTaks, DeleteClass, SuccessCreateTask } from "@/frontend/modules/tasks/components";
 import { usePopup } from "../context";
 
 const ModalsProvider = () => {

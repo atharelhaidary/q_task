@@ -1,40 +1,27 @@
 "use client"
-import { usePopup } from "@/frontend/shared/context";
 import { Modal} from "antd"
 import { CloseOutlined } from '@ant-design/icons';
 import { Heading, Loading, SmoothBtn } from "@/frontend/shared/components";
 import GlobalForm from "@/frontend/shared/components/global-form/GlobalForm";
 import { FormField } from "@/frontend/shared/components/global-form/ui/FormField";
 import { FormProvider} from "react-hook-form";
-import { POPUP } from "@/frontend/shared/constants";
 import { useEffect } from "react";
 import { useTasksForm } from "../../hooks";
 
 
 
 export default function AddNewTask  ()  {
-    const {  popupStates, hidePopup  } = usePopup();
-    const { methods, handleSubmit, isFetching, isLoading , taskFields } = useTasksForm()
-    const { reset, setValue } = methods;
-    const addTask =  popupStates?.[POPUP?.TASKS?.ADD] || {}
-    const  updateTask =  popupStates?.[POPUP.TASKS.UPDATE] || {}
-    const isAddMode = addTask?.open;
-    const isUpdateMode = updateTask?.open;
-    const openModal = isAddMode || isUpdateMode;
-    const modalTitle = isAddMode ? "Create Task" : "Update Task";
-    const submitButtonText = isAddMode ? "Create Task" : "Update Task";
+    const { popupAdd, popupUpdate, methods, handleSubmit, isFetching, isLoading , taskFields, handleCancel } = useTasksForm()
+    const {  setValue } = methods;
+    const openModal = popupAdd?.open || popupUpdate?.open;
+    const modalTitle = popupAdd?.open ? "Create Task" : "Update Task";
+    const submitButtonText = popupAdd?.open ? "Create Task" : "Update Task";
 
-    //cancel
-    const handleCancel = () => {
-        isAddMode ?  hidePopup(POPUP.TASKS.ADD) : hidePopup(POPUP.TASKS.UPDATE)
-        reset({}); 
-    }
     useEffect(()=>{
-        if(addTask?.status > -1){
-            setValue("status", {value: addTask?.status})
+        if(popupAdd?.status > -1){
+            setValue("status", {value: popupAdd?.status})
         }
-    },[addTask])
-    if(!openModal) return null;
+    },[popupAdd?.status, setValue])
     return(
      <Modal
         title={ 
@@ -42,7 +29,6 @@ export default function AddNewTask  ()  {
                 title={modalTitle}
                 icon={
                     <SmoothBtn 
-                        form="searchTeacher"
                         htmlType="button"
                         btnStyle="!bg-none !bg-red-500  !p-1.5  !rounded-full mt-2"
                         children={ <CloseOutlined />}
@@ -88,7 +74,7 @@ export default function AddNewTask  ()  {
                                         formLayoutStyle="vertical"
                                         formClassName={`form !relative`}
                                         onSubmit={handleSubmit} 
-                                        id={isAddMode ? "add-task": isUpdateMode && "update-task"}
+                                        id={ popupAdd?.open ? "add-task":  "update-task"}
                                         submit = {
                                             {
                                                 text: submitButtonText,

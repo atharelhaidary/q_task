@@ -6,8 +6,10 @@ import {  tasksServices} from "../../services/tasks.services";
 import { POPUP, QUERY_KEYS } from "@/frontend/shared/constants";
 type TuseUpdateTaskProps = {
     setError?: UseFormSetError<FieldValues>;
+    params? : Record<string,any>
 }
-export const useUpdateTask = ({setError}: TuseUpdateTaskProps = {}) => {
+
+export const useUpdateTask = ({setError, params}: TuseUpdateTaskProps = {}) => {
     const {  showPopup, hidePopup } = usePopup();
     return useApiMutaion<TApiResponse<ITask>,any>({
             func :async (data :FormData): Promise<TApiResponse<ITask>> => {
@@ -15,8 +17,8 @@ export const useUpdateTask = ({setError}: TuseUpdateTaskProps = {}) => {
             },
             config:{
                 setError,
-                queryKey: [QUERY_KEYS.TASKS,{pagination: false}],
-                onOptimisticUpdate: true,
+                queryKey: () => [QUERY_KEYS.TASKS, params],
+                onOptimisticUpdate: setError ? false : true,
                 onSuccess : (data) => {
                     const { message,success } = data || {}
                     hidePopup(POPUP.TASKS.UPDATE)
@@ -40,10 +42,8 @@ export const useUpdateTask = ({setError}: TuseUpdateTaskProps = {}) => {
                     };
                 },
                 invalidateQueries: (data) => {
-                    if(setError){
                         const queries = [[QUERY_KEYS.TASKS]];
                         return queries;
-                    }
                 }
             }
           })

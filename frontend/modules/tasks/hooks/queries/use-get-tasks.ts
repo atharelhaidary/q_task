@@ -12,7 +12,7 @@ type TProps = {
 export const useGetTasks =  ({enabled = true, data, key}: TProps ={}) => {
     const finalKey = key ? `${key}_${PAGINATION_KEYS.TASKS}` :  PAGINATION_KEYS.TASKS
     const { paginationKey  } = usePagination(finalKey);
-    const { queryParams } =  paginationKey|| {}; 
+    const { queryParams } =  paginationKey || {}; 
     const stableData = useMemo(() => data, [JSON.stringify(data)]); 
 
     
@@ -24,14 +24,18 @@ export const useGetTasks =  ({enabled = true, data, key}: TProps ={}) => {
         }
         const paramsObject = Object.fromEntries(params);
         return data ? { ...data, ...paramsObject } : paramsObject;
-    }, [stableData,queryParams]);
+    }, [stableData, queryParams]);
     
     
-    return useApiQuery<TApiResponse<ITask[]>, any>({
-        keys:[QUERY_KEYS.TASKS,finalParams] ,
+    const query = useApiQuery<TApiResponse<ITask[]>, any>({
+        keys: [QUERY_KEYS.TASKS, finalParams],
         func: () => tasksServices.getAll(finalParams), 
         enabled: enabled && Object.keys(finalParams).length > 0 ,
     });
+    return{
+        ...query,
+        finalParams
+    }
 }
 
 
