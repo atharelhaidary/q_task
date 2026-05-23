@@ -1,9 +1,9 @@
-import { usePopup } from "@/frontend/shared/context/PopupContext";
 import { FieldValues, UseFormSetError } from "react-hook-form";
-import { useApiMutaion } from "@/frontend/shared/hooks/useApiMutation";
 import { ITask, TApiResponse} from "@/shared/types";
 import {  tasksServices} from "../../services/tasks.services";
 import { POPUP, QUERY_KEYS } from "@/frontend/shared/constants";
+import { usePopup } from "@/frontend/shared/context";
+import { useApiMutaion } from "@/frontend/shared/hooks/useApiMutation";
 type TuseUpdateTaskProps = {
     setError?: UseFormSetError<FieldValues>;
     params? : Record<string,any>
@@ -17,8 +17,8 @@ export const useUpdateTask = ({setError, params}: TuseUpdateTaskProps = {}) => {
             },
             config:{
                 setError,
-                queryKey: () => [QUERY_KEYS.TASKS, params],
-                onOptimisticUpdate: setError ? false : true,
+                queryKey: !params ? [QUERY_KEYS.TASKS,{ pagination : false}] : [QUERY_KEYS.TASKS, params] ,
+                onOptimisticUpdate: true,
                 onSuccess : (data) => {
                     const { message,success } = data || {}
                     hidePopup(POPUP.TASKS.UPDATE)
@@ -31,7 +31,6 @@ export const useUpdateTask = ({setError, params}: TuseUpdateTaskProps = {}) => {
                     
                     const taskId = variables.get('_id');
                     const newStatus = variables.get('status');
-                    
                     return {
                         ...oldData,
                         data: oldData.data.map((task: any) =>
@@ -42,8 +41,9 @@ export const useUpdateTask = ({setError, params}: TuseUpdateTaskProps = {}) => {
                     };
                 },
                 invalidateQueries: (data) => {
-                        const queries = [[QUERY_KEYS.TASKS]];
-                        return queries;
+                    const queries = [[QUERY_KEYS.TASKS]];
+                    return queries;
+                        
                 }
             }
           })

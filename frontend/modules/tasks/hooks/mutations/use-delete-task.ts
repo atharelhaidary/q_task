@@ -10,6 +10,7 @@ export const useDeleteTask= () => {
                 return await tasksServices.deleteServices(data)
             },
             config:{
+                queryKey: [QUERY_KEYS.TASKS],
                 onSuccess : (data) => {
                     const { success, message} = data || {}
                     hidePopup(POPUP.TASKS.DELETE)

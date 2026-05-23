@@ -1,11 +1,9 @@
-
 import { UseMutationOptions, useMutation, useQueryClient } from "@tanstack/react-query";
 import { FieldValues, UseFormSetError } from "react-hook-form";
 import { AxiosError } from "axios";
 import { usePopup } from "../context/PopupContext";
 import { TApiResponse, TInvalidateQueries } from "@/shared/types";
 import { handleApiError } from "../lib";
-import { useCallback } from "react";
 
 export type ApiAxiosError<T = unknown> = AxiosError<TApiResponse<T>>;
 type TMutationContext = { previousData: unknown; currentQueryKey: any[] }
@@ -13,7 +11,7 @@ type TMutationContext = { previousData: unknown; currentQueryKey: any[] }
 export type TConfig<TResponse = unknown, TRequest = unknown> = {
     invalidateQueries?: TInvalidateQueries<TResponse>;
     setError?: UseFormSetError<FieldValues>;
-    queryKey?: any[] | (() => any[]);
+    queryKey?: any[]
     onOptimisticUpdate?: boolean;
     updateData?: (oldData: any, variables: TRequest) => any;
     onSuccess?: (data: TResponse, variables: TRequest, context: TMutationContext) => void;
@@ -37,34 +35,51 @@ export const useApiMutaion = <TResponse extends { message?: string; data?: unkno
         invalidateQueries: configInvalidateQueries,
         onOptimisticUpdate,
         updateData,
+        queryKey,
         ...restConfig
     } = config || {};
 
-    const getCurrentQueryKey = useCallback(() => {
-        if (typeof config?.queryKey === 'function') return config.queryKey();
-        return config?.queryKey || [];
-    }, [config?.queryKey]);
 
     return useMutation<TResponse, ApiAxiosError<TErrorData>, TRequest, TMutationContext>({
         mutationFn: func,
 
         onMutate: async (variables): Promise<TMutationContext> => {
-            const currentQueryKey = getCurrentQueryKey();
+            const currentQueryKey = queryKey;
             let previousData = undefined;
 
-            if (currentQueryKey.length > 0 && onOptimisticUpdate) {
+            if (currentQueryKey.length > 0 && onOptimisticUpdate && updateData ) {
                 await queryClient.cancelQueries({ queryKey: currentQueryKey });
                 previousData = queryClient.getQueryData(currentQueryKey);
                 if (updateData) {
                     queryClient.setQueryData(currentQueryKey, (old: any) => updateData(old, variables));
                 }
+                
             } 
 
             return { previousData, currentQueryKey };
         },
 
-        onSuccess: (data, variables, context) => {
-            if (!onOptimisticUpdate && configInvalidateQueries) {
+        onSuccess: async (data, variables, context) => {
+            // make Optimistic UI feeling   
+            if ( onOptimisticUpdate  && updateData  && context?.currentQueryKey?.length > 0 && data?.data) {
+                queryClient.setQueryData(context.currentQueryKey, (oldData: any) => {
+                    if (!oldData) return data;
+                    
+                    const serverTask = data.data as any;
+                    const updatedTasks = oldData.data?.map((task: any) =>
+                        String(task._id) === String(serverTask?._id)
+                            ? { ...task, ...serverTask }
+                            : task
+                    ) || oldData.data;
+                    
+                    return {
+                        ...oldData,
+                        data: updatedTasks,
+                    };
+                });
+            }
+           //refresh data with invalidate queries
+            if ( !onOptimisticUpdate && configInvalidateQueries) {
                 const queries = typeof configInvalidateQueries === 'function'
                     ? configInvalidateQueries(data)
                     : configInvalidateQueries;
@@ -84,9 +99,9 @@ export const useApiMutaion = <TResponse extends { message?: string; data?: unkno
         },
 
         onSettled: (data, error, variables, context) => {
-            if (context?.currentQueryKey?.length > 0 && onOptimisticUpdate) {
-                queryClient.invalidateQueries({ queryKey: context.currentQueryKey });
-            }
+            // if (context?.currentQueryKey?.length > 0 && !onOptimisticUpdate) {
+            //     queryClient.invalidateQueries({ queryKey: context.currentQueryKey });
+            // }
             hidePopup("loading");
           
             window.scrollTo({ top: 0, behavior: 'smooth' });

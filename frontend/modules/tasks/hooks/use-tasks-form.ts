@@ -19,14 +19,15 @@ export const useTasksForm = ()  => {
         }),
     });
     const {  reset, setError } = methods
+    const {  popupStates , hidePopup } = usePopup();
     const { mutate : createTask } = useCreateTask({setError})
     const { mutate : updateTask } = useUpdateTask({setError})
-    const {  popupStates , hidePopup } = usePopup();
     const popupAdd = useMemo(() => popupStates?.[POPUP.TASKS.ADD] || {}, [popupStates?.[POPUP.TASKS.ADD]])
     const popupUpdate = useMemo(() => popupStates?.[POPUP.TASKS.UPDATE] || {}, [popupStates?.[POPUP.TASKS.UPDATE]])
     const isAddMode = popupAdd?.open 
     const isUpdateMode = popupUpdate?.open
     const updateId = popupUpdate?.id
+  
     //submit function
     const handleSubmit = useCallback((data: FieldValues) => {
         const formData = new FormData();
@@ -42,13 +43,14 @@ export const useTasksForm = ()  => {
             updateTask(newApiFormData);
         }
     }, [isAddMode, isUpdateMode, createTask, updateTask]);
-    // get specific teacher
-    const { data, isLoading  , isFetching } =  useGetTasks({
+   
+   // get specific teacher
+   const { data, isLoading  , isFetching } =  useGetTasks({
         data :{_id: updateId},
         enabled : !!isUpdateMode
     })
     const tasksData = useMemo(()=>{
-       return data?.data[0]
+         return data?.data[0]
     },[data?.data])
 
     // assign teachet data to form inputs

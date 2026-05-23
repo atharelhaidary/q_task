@@ -15,6 +15,7 @@ export const useCreateTask = ({setError}: TuseCreateTaskProps) => {
             },
             config:{
                 setError,
+                queryKey: [QUERY_KEYS.TASKS],
                 onSuccess : (data) => {
                     const { success, message } = data || {}
                     hidePopup(POPUP.TASKS.ADD)
